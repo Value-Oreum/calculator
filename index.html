@@ -48,27 +48,21 @@ body {
   justify-content: center;
   padding: 24px 20px 40px;
 }
-.landing-inner {
-  width: 100%;
-  max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
+/* .landing-inner is defined below .cta-wrap */
 .landing-img {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   object-fit: contain;
   background: var(--bg2);
-  border-radius: 16px;
+  border-radius: 16px 16px 0 0;
   border: 3px solid var(--border);
+  border-bottom: none;
   box-shadow:
     0 0 0 1px rgba(201,168,76,.15),
     0 20px 60px rgba(0,0,0,.75);
 }
-.landing-inner picture { width: 100%; aspect-ratio: 1 / 1; display: block; }
+.landing-inner picture { width: 100%; display: block; }
 .cta-wrap {
   width: 100%;
   background: var(--bg2);
@@ -80,7 +74,15 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  box-shadow: 0 20px 40px rgba(0,0,0,.5);
+}
+.landing-inner {
+  width: fit-content;
+  max-width: min(700px, calc(100vw - 40px));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
 }
 .cta-sub {
   font-size: 14px;
@@ -215,7 +217,7 @@ body {
 }
 .card-title {
   display: flex; align-items: center; gap: 10px;
-  font-size: 11px; font-weight: 800; letter-spacing: .22em;
+  font-size: 13px; font-weight: 800; letter-spacing: .22em;
   color: var(--gold); text-transform: uppercase; margin-bottom: 18px;
 }
 .card-title::before, .card-title::after { content:''; flex:1; height:1px; background:var(--border); }
@@ -224,7 +226,7 @@ body {
 .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 @media (max-width: 420px) { .input-row { grid-template-columns: 1fr; } }
 .input-group { display: flex; flex-direction: column; gap: 6px; }
-.input-label { font-size: 14px; color: var(--muted); font-weight: 700; }
+.input-label { font-size: 16px; color: var(--muted); font-weight: 700; }
 .input-field {
   background: var(--bg3); border: 2px solid var(--border); border-radius: 8px;
   padding: 12px 14px; color: var(--cream); font-size: 18px; font-family: var(--font);
@@ -241,8 +243,8 @@ body {
   background: linear-gradient(135deg, rgba(201,168,76,.1), var(--bg3));
   border-radius: 8px; border: 2px solid var(--border);
 }
-.total-label { font-size: 14px; color: var(--muted); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-.total-value { font-size: 24px; font-weight: 900; color: var(--gold2); font-family: var(--mono); }
+.total-label { font-size: 16px; color: var(--muted); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.total-value { font-size: 28px; font-weight: 900; color: var(--gold2); font-family: var(--mono); }
 
 /* ── tabs ── */
 .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -259,17 +261,18 @@ body {
 
 /* ── chips ── */
 .chip-section { margin-bottom: 16px; }
-.chip-label { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .16em; text-transform: uppercase; margin-bottom: 10px; }
+.chip-label { font-size: 14px; font-weight: 800; color: var(--muted); letter-spacing: .16em; text-transform: uppercase; margin-bottom: 10px; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
-  padding: 10px 18px; border-radius: 6px; border: 2px solid var(--border);
-  background: var(--bg3); color: var(--muted); font-size: 16px; font-weight: 700;
+  padding: 11px 20px; border-radius: 6px; border: 2px solid var(--border);
+  background: var(--bg3); color: var(--muted); font-size: 18px; font-weight: 700;
   cursor: pointer; transition: all .15s; font-family: var(--font);
 }
 .chip:hover { border-color: var(--gold); color: var(--gold); }
 .chip.active { background: rgba(201,168,76,.15); border-color: var(--gold); color: var(--gold2); }
 .chip.direct { border-style: dashed; }
 .chip.direct.active { background: rgba(224,112,48,.12); border-color: var(--warn); color: var(--warn); }
+#noOverflowBtn2.active { background: rgba(138,122,96,.2); border-color: var(--muted); color: var(--muted); }
 .direct-input-wrap { display: none; align-items: center; gap: 8px; margin-top: 10px; }
 .direct-input-wrap.show { display: flex; }
 .direct-input-wrap input {
@@ -279,8 +282,8 @@ body {
 }
 .direct-input-wrap .unit { font-size: 16px; color: var(--warn); font-weight: 800; }
 .threshold-note {
-  font-size: 14px; color: var(--muted); margin-top: 10px; line-height: 1.7;
-  padding: 10px 14px; background: var(--bg3); border-radius: 8px;
+  font-size: 16px; color: var(--muted); margin-top: 10px; line-height: 1.7;
+  padding: 12px 16px; background: var(--bg3); border-radius: 8px;
   border-left: 3px solid rgba(201,168,76,.35);
 }
 .threshold-note b { color: var(--cream); }
@@ -300,8 +303,8 @@ body {
   gap: 12px;
 }
 .result-row.highlight { border-color: rgba(201,168,76,.5); background: rgba(201,168,76,.07); }
-.result-row-label { font-size: 14px; color: var(--muted); font-weight: 600; line-height: 1.4; flex-shrink: 0; }
-.result-row-value { font-size: 20px; font-weight: 800; color: var(--cream); text-align: right; font-family: var(--mono); }
+.result-row-label { font-size: 16px; color: var(--muted); font-weight: 600; line-height: 1.4; flex-shrink: 0; }
+.result-row-value { font-size: 24px; font-weight: 800; color: var(--cream); text-align: right; font-family: var(--mono); }
 .result-row.highlight .result-row-value { color: var(--gold2); }
 .safe-note { display: block; font-size: 13px; color: var(--warn); margin-top: 3px; font-weight: 700; }
 .overflow-detail {
@@ -331,13 +334,13 @@ body {
   padding: 14px 16px; background: rgba(62,168,110,.08);
   border: 2px solid rgba(62,168,110,.35); border-radius: 8px; gap: 12px;
 }
-.net-label { font-size: 15px; color: var(--ok); font-weight: 800; }
-.net-value  { font-size: 24px; font-weight: 900; color: var(--ok); font-family: var(--mono); text-shadow: 0 0 12px rgba(62,168,110,.4); }
+.net-label { font-size: 17px; color: var(--ok); font-weight: 800; }
+.net-value  { font-size: 28px; font-weight: 900; color: var(--ok); font-family: var(--mono); text-shadow: 0 0 12px rgba(62,168,110,.4); }
 .tax-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
 .seg { display: flex; gap: 8px; }
 .seg-btn {
-  flex: 1; padding: 14px; border-radius: 8px; border: 2px solid var(--border);
-  background: var(--bg3); color: var(--muted); font-size: 17px; font-weight: 800;
+  flex: 1; padding: 16px; border-radius: 8px; border: 2px solid var(--border);
+  background: var(--bg3); color: var(--muted); font-size: 20px; font-weight: 800;
   cursor: pointer; transition: all .15s; font-family: var(--font);
 }
 .seg-btn.active { background: rgba(201,168,76,.16); border-color: var(--gold); color: var(--gold2); }
@@ -351,16 +354,17 @@ body {
   box-shadow: 0 0 0 1px rgba(255,209,102,.08), inset 0 1px 0 rgba(255,209,102,.08);
   gap: 16px;
 }
-.real-label { font-size: 14px; color: rgba(255,209,102,.7); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; line-height: 1.5; flex-shrink: 0; }
-.real-value { font-size: 28px; font-weight: 900; color: var(--real); text-align: right; font-family: var(--mono); text-shadow: 0 0 20px rgba(255,209,102,.45); }
-.real-sub { display: block; font-size: 12px; color: rgba(255,209,102,.4); font-weight: 500; margin-top: 4px; font-family: var(--font); }
-@media (max-width: 380px) { .real-value { font-size: 22px; } }
+.real-label { font-size: 16px; color: rgba(255,209,102,.7); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; line-height: 1.5; flex-shrink: 0; }
+.real-value { font-size: 34px; font-weight: 900; color: var(--real); text-align: right; font-family: var(--mono); text-shadow: 0 0 20px rgba(255,209,102,.45); }
+.real-sub { display: block; font-size: 14px; color: rgba(255,209,102,.4); font-weight: 500; margin-top: 4px; font-family: var(--font); }
+.real-pct { display: block; font-size: 16px; color: rgba(255,209,102,.65); font-weight: 700; margin-top: 2px; font-family: var(--font); letter-spacing: .04em; }
+@media (max-width: 380px) { .real-value { font-size: 26px; } }
 
 /* ── slider ── */
 .slider-wrap { margin-bottom: 10px; }
 .slider-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-.slider-name  { font-size: 14px; color: var(--muted); font-weight: 700; }
-.slider-value { font-size: 28px; font-weight: 900; color: var(--gold2); font-family: var(--mono); text-shadow: 0 0 10px rgba(201,168,76,.3); }
+.slider-name  { font-size: 16px; color: var(--muted); font-weight: 700; }
+.slider-value { font-size: 30px; font-weight: 900; color: var(--gold2); font-family: var(--mono); text-shadow: 0 0 10px rgba(201,168,76,.3); }
 input[type=range].slider {
   -webkit-appearance: none; appearance: none; width: 100%; height: 8px;
   border-radius: 999px; background: var(--bg3); outline: none; border: 2px solid var(--border);
@@ -380,15 +384,15 @@ input[type=range].slider::-moz-range-thumb {
 
 /* ── PC layout improvements ── */
 @media (min-width: 560px) {
-  body { font-size: 17px; }
-  .card { padding: 26px 22px; }
-  .card::before { margin: -26px -22px 22px; }
-  .chip { padding: 11px 20px; font-size: 17px; }
-  .input-field { font-size: 19px; }
-  .total-value { font-size: 27px; }
-  .result-row-value { font-size: 22px; }
-  .net-value { font-size: 26px; }
-  .real-value { font-size: 30px; }
+  body { font-size: 18px; }
+  .card { padding: 28px 24px; }
+  .card::before { margin: -28px -24px 24px; }
+  .chip { padding: 12px 22px; font-size: 19px; }
+  .input-field { font-size: 20px; }
+  .total-value { font-size: 30px; }
+  .result-row-value { font-size: 26px; }
+  .net-value { font-size: 30px; }
+  .real-value { font-size: 36px; }
   .cta-btn { font-size: 22px; padding: 20px 56px; }
 }
 </style>
@@ -520,48 +524,11 @@ input[type=range].slider::-moz-range-thumb {
           </div>
         </div>
 
-        <div class="chip-section">
-          <div class="chip-label">공사비 초과 기준점</div>
-          <div class="chip-row" id="threshChips1">
-            <button class="chip active" onclick="selectChip('threshChips1','threshDirect1',this,15)">15%</button>
-            <button class="chip" onclick="selectChip('threshChips1','threshDirect1',this,17)">17%</button>
-            <button class="chip" onclick="selectChip('threshChips1','threshDirect1',this,20)">20%</button>
-            <button class="chip direct" onclick="toggleDirect('threshChips1','threshDirect1',this)">직접입력</button>
-          </div>
-          <div class="direct-input-wrap" id="threshDirect1">
-            <input type="number" id="threshDirectVal1" min="1" max="100" placeholder="0" oninput="calc()">
-            <span class="unit">%</span>
-          </div>
-          <div class="threshold-note" id="threshNote1">공사비가 발주액의 <b>15%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.</div>
-        </div>
-
-        <div class="chip-section">
-          <div class="chip-label">공사비 초과분 비율</div>
-          <div class="chip-row" id="overflowChips1">
-            <button class="chip active" onclick="selectChip('overflowChips1','overflowDirect1',this,85)">85%</button>
-            <button class="chip" onclick="selectChip('overflowChips1','overflowDirect1',this,80)">80%</button>
-            <button class="chip direct" onclick="toggleDirect('overflowChips1','overflowDirect1',this)">직접입력</button>
-          </div>
-          <div class="direct-input-wrap" id="overflowDirect1">
-            <input type="number" id="overflowDirectVal1" min="1" max="100" placeholder="0" oninput="calc()">
-            <span class="unit">%</span>
-          </div>
-        </div>
-
         <div class="divider">◆ 계산 결과 ◆</div>
         <div class="result-block">
-          <div class="result-row">
+          <div class="result-row highlight">
             <span class="result-row-label" id="profitLabel1">기본 수익 (발주액 × 30%)</span>
             <span class="result-row-value" id="profitBase1">0 원</span>
-          </div>
-          <div id="overflowDetail1" class="overflow-detail" style="display:none"></div>
-          <div class="result-row">
-            <span class="result-row-label">공사비 초과 추가 수익</span>
-            <span class="result-row-value" id="profitOverflow1">0 원</span>
-          </div>
-          <div class="result-row highlight">
-            <span class="result-row-label">최종 수익 합계</span>
-            <span class="result-row-value" id="profitTotal1">0 원</span>
           </div>
         </div>
 
@@ -569,13 +536,17 @@ input[type=range].slider::-moz-range-thumb {
           <div class="net-section-title">에이전시 제공 수수료</div>
           <div class="slider-wrap">
             <div class="slider-head">
-              <span class="slider-name">수수료율 (10% — 40%)</span>
+              <span class="slider-name">좌우를 움직여서 수수료율(10%-40%) 조정하세요</span>
               <span class="slider-value" id="ledAgencyVal1">35%</span>
             </div>
             <input type="range" class="slider" id="ledAgency1" min="10" max="40" step="1" value="35" oninput="calc()">
             <div class="slider-scale"><span>10%</span><span>25%</span><span>40%</span></div>
           </div>
-          <div class="formula-box" id="ledNetBreak1"></div>
+          <div class="result-row" style="margin:12px 0 6px">
+            <span class="result-row-label">에이전시 수수료 금액</span>
+            <span class="result-row-value" id="ledAgencyAmt1">0 원</span>
+          </div>
+          <div class="formula-box" id="ledNetFormula1"></div>
           <div class="net-result-row">
             <span class="net-label">순수익 (NET)</span>
             <span class="net-value" id="ledNetVal1">0 원</span>
@@ -618,6 +589,7 @@ input[type=range].slider::-moz-range-thumb {
             <button class="chip" onclick="selectChip('threshChips2','threshDirect2',this,17)">17%</button>
             <button class="chip" onclick="selectChip('threshChips2','threshDirect2',this,20)">20%</button>
             <button class="chip direct" onclick="toggleDirect('threshChips2','threshDirect2',this)">직접입력</button>
+            <button class="chip" id="noOverflowBtn2" onclick="toggleNoOverflow2(this)">추가수익없음</button>
           </div>
           <div class="direct-input-wrap" id="threshDirect2">
             <input type="number" id="threshDirectVal2" min="1" max="100" placeholder="0" oninput="calc()">
@@ -626,16 +598,18 @@ input[type=range].slider::-moz-range-thumb {
           <div class="threshold-note" id="threshNote2">공사비가 발주액의 <b>15%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.</div>
         </div>
 
-        <div class="chip-section">
-          <div class="chip-label">공사비 초과분 비율</div>
-          <div class="chip-row" id="overflowChips2">
-            <button class="chip active" onclick="selectChip('overflowChips2','overflowDirect2',this,85)">85%</button>
-            <button class="chip" onclick="selectChip('overflowChips2','overflowDirect2',this,80)">80%</button>
-            <button class="chip direct" onclick="toggleDirect('overflowChips2','overflowDirect2',this)">직접입력</button>
-          </div>
-          <div class="direct-input-wrap" id="overflowDirect2">
-            <input type="number" id="overflowDirectVal2" min="1" max="100" placeholder="0" oninput="calc()">
-            <span class="unit">%</span>
+        <div id="overflowSection2">
+          <div class="chip-section">
+            <div class="chip-label">공사비 초과분 비율</div>
+            <div class="chip-row" id="overflowChips2">
+              <button class="chip active" onclick="selectChip('overflowChips2','overflowDirect2',this,85)">85%</button>
+              <button class="chip" onclick="selectChip('overflowChips2','overflowDirect2',this,80)">80%</button>
+              <button class="chip direct" onclick="toggleDirect('overflowChips2','overflowDirect2',this)">직접입력</button>
+            </div>
+            <div class="direct-input-wrap" id="overflowDirect2">
+              <input type="number" id="overflowDirectVal2" min="1" max="100" placeholder="0" oninput="calc()">
+              <span class="unit">%</span>
+            </div>
           </div>
         </div>
 
@@ -646,7 +620,7 @@ input[type=range].slider::-moz-range-thumb {
             <span class="result-row-value" id="profitBase2">0 원</span>
           </div>
           <div id="overflowDetail2" class="overflow-detail" style="display:none"></div>
-          <div class="result-row">
+          <div class="result-row" id="overflowRow2">
             <span class="result-row-label">공사비 초과 추가 수익</span>
             <span class="result-row-value" id="profitOverflow2">0 원</span>
           </div>
@@ -660,13 +634,17 @@ input[type=range].slider::-moz-range-thumb {
           <div class="net-section-title">에이전시 제공 수수료</div>
           <div class="slider-wrap">
             <div class="slider-head">
-              <span class="slider-name">수수료율 (10% — 40%)</span>
+              <span class="slider-name">좌우를 움직여서 수수료율(10%-40%) 조정하세요</span>
               <span class="slider-value" id="ledAgencyVal2">35%</span>
             </div>
             <input type="range" class="slider" id="ledAgency2" min="10" max="40" step="1" value="35" oninput="calc()">
             <div class="slider-scale"><span>10%</span><span>25%</span><span>40%</span></div>
           </div>
-          <div class="formula-box" id="ledNetBreak2"></div>
+          <div class="result-row" style="margin:12px 0 6px">
+            <span class="result-row-label">에이전시 수수료 금액</span>
+            <span class="result-row-value" id="ledAgencyAmt2">0 원</span>
+          </div>
+          <div class="formula-box" id="ledNetFormula2"></div>
           <div class="net-result-row">
             <span class="net-label">순수익 (NET)</span>
             <span class="net-value" id="ledNetVal2">0 원</span>
@@ -827,6 +805,8 @@ function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   window.scrollTo(0, 0);
+  if (id === 'led')   resetLED();
+  if (id === 'robot') resetRobot();
 }
 
 // ── LED tab ──────────────────────────────────────────────────────────────────
@@ -870,6 +850,24 @@ function setSeg(segId, btn) {
 }
 function segNum(segId) { return +(document.getElementById(segId).querySelector('.seg-btn.active')?.dataset.v || 0); }
 
+// ── Option 2 추가수익없음 toggle ─────────────────────────────────────────────
+function toggleNoOverflow2(btn) {
+  const isNow = !btn.classList.contains('active');
+  // deactivate all other threshold chips
+  document.getElementById('threshChips2').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('threshDirect2').classList.remove('show');
+  btn.classList.toggle('active', isNow);
+  // hide/show overflow section
+  document.getElementById('overflowSection2').style.display = isNow ? 'none' : 'block';
+  document.getElementById('overflowRow2').style.display     = isNow ? 'none' : 'flex';
+  document.getElementById('threshNote2').style.display      = isNow ? 'none' : 'block';
+  if (!isNow) {
+    // re-activate first threshold chip when turning off
+    document.getElementById('threshChips2').querySelector('.chip').classList.add('active');
+  }
+  calc();
+}
+
 // ── format ───────────────────────────────────────────────────────────────────
 function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function fmt(n) {
@@ -884,51 +882,68 @@ function calc() { calcLED(); calcRobot(); }
 function calcLED() {
   const mat = num('materialCost'), con = num('constructionCost'), total = mat + con;
   document.getElementById('totalOrder').textContent = fmt(total);
-  [1, 2].forEach(n => {
-    const th = getThresh(n);
-    document.getElementById('threshNote' + n).innerHTML =
-      `공사비가 발주액의 <b>${th}%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.`;
-    const base  = n === 1 ? total : mat;
-    const label = n === 1 ? '발주액' : '자재비';
-    const p  = getVal('profitChips' + n, 'profitDirectVal' + n);
-    const ov = getVal('overflowChips' + n, 'overflowDirectVal' + n);
-    const tp = calcOption(n, total, base, con, p, ov, th, label);
-    ledNet(n, total, tp);
-  });
+
+  // ── Option 1: 발주액 기준, overflow 없음 ──
+  const p1  = getVal('profitChips1', 'profitDirectVal1');
+  const pb1 = total * p1 / 100;
+  document.getElementById('profitLabel1').textContent = `기본 수익 (발주액 × ${p1}%)`;
+  document.getElementById('profitBase1').textContent  = fmt(pb1);
+  ledNet(1, total, pb1, p1);
+
+  // ── Option 2: 자재비 기준, overflow 있음 (추가수익없음 토글 가능) ──
+  const p2   = getVal('profitChips2', 'profitDirectVal2');
+  const noOv = document.getElementById('noOverflowBtn2').classList.contains('active');
+  const pb2  = mat * p2 / 100;
+  document.getElementById('profitLabel2').textContent = `기본 수익 (자재비 × ${p2}%)`;
+  document.getElementById('profitBase2').textContent  = fmt(pb2);
+
+  let ovP = 0;
+  const det = document.getElementById('overflowDetail2');
+  if (!noOv) {
+    const th2   = getThresh(2);
+    document.getElementById('threshNote2').innerHTML =
+      `공사비가 발주액의 <b>${th2}%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.`;
+    const thAmt = total * th2 / 100;
+    const ovAmt = Math.max(0, con - thAmt);
+    const ovPct = getVal('overflowChips2', 'overflowDirectVal2');
+    ovP = ovAmt * ovPct / 100;
+    if (ovAmt > 0 && total > 0) {
+      det.style.display = 'block';
+      det.innerHTML = `✅ 공사비(${fmt(con)})가 발주액의 ${th2}%(${fmt(thAmt)})를 초과<br>초과분: ${fmt(ovAmt)} × ${ovPct}% = <b>+${fmt(ovP)}</b>`;
+    } else { det.style.display = 'none'; }
+  } else {
+    det.style.display = 'none';
+  }
+
+  document.getElementById('profitOverflow2').textContent = fmt(ovP);
+  const tp2 = pb2 + ovP;
+  document.getElementById('profitTotal2').textContent =
+    fmt(tp2) + (total ? ` (발주액의 ${(tp2/total*100).toFixed(1)}%)` : '');
+
+  ledNet(2, total, tp2, p2);
 }
 
-function calcOption(n, total, base, con, pPct, ovPct, thPct, label) {
-  const pb = base * pPct / 100;
-  document.getElementById('profitLabel' + n).textContent = `기본 수익 (${label} × ${pPct}%)`;
-  document.getElementById('profitBase' + n).textContent  = fmt(pb);
-  const thAmt = total * thPct / 100;
-  const ovAmt = Math.max(0, con - thAmt);
-  const ovP   = ovAmt * ovPct / 100;
-  const det   = document.getElementById('overflowDetail' + n);
-  if (ovAmt > 0 && total > 0) {
-    det.style.display = 'block';
-    det.innerHTML = `✅ 공사비(${fmt(con)})가 발주액의 ${thPct}%(${fmt(thAmt)})를 초과<br>초과분: ${fmt(ovAmt)} × ${ovPct}% = <b>+${fmt(ovP)}</b>`;
-  } else { det.style.display = 'none'; }
-  document.getElementById('profitOverflow' + n).textContent = fmt(ovP);
-  const tp = pb + ovP;
-  document.getElementById('profitTotal' + n).textContent =
-    fmt(tp) + (total ? ` (발주액의 ${(tp/total*100).toFixed(1)}%)` : '');
-  return tp;
-}
-
-function ledNet(n, total, tp) {
-  const ag = +document.getElementById('ledAgency' + n).value;
+function ledNet(n, total, tp, pPct) {
+  const ag    = +document.getElementById('ledAgency' + n).value;
   document.getElementById('ledAgencyVal' + n).textContent = ag + '%';
   const agAmt = total * ag / 100;
-  const net   = tp - agAmt;
-  document.getElementById('ledNetBreak' + n).innerHTML =
-    `최종수익합계 ${fmt(tp)}<br>− 발주액 ${fmt(total)} × ${ag}% = <b>${fmt(agAmt)}</b><br>= 순수익(NET) <b>${fmt(net)}</b>`;
-  document.getElementById('ledNetVal' + n).textContent = fmt(net);
+  document.getElementById('ledAgencyAmt' + n).textContent = fmt(agAmt);
+
+  const net    = tp - agAmt;
+  const netPct = total ? (net / total * 100).toFixed(1) : '—';
+
+  document.getElementById('ledNetFormula' + n).innerHTML =
+    `순수익(NET) = 기본수익 <b>${pPct}%</b> − 에이전시수수료 <b>${ag}%</b>`;
+  document.getElementById('ledNetVal' + n).innerHTML =
+    `${fmt(net)}<span style="display:block;font-size:15px;font-weight:700;color:rgba(62,168,110,.7);font-family:var(--font);margin-top:3px">${total ? `발주액의 ${netPct}%` : ''}</span>`;
+
   const taxPct = segNum('ledTaxSeg' + n);
   const taxAmt = net > 0 ? net * taxPct / 100 : 0;
   const real   = net - taxAmt;
+  const realPct = total ? (real / total * 100).toFixed(1) : '—';
+
   document.getElementById('ledRealVal' + n).innerHTML =
-    `${fmt(real)}<span class="real-sub">순수익(NET) ${fmt(net)} − 법인세 ${taxPct}%(${fmt(taxAmt)})</span>`;
+    `${fmt(real)}<span class="real-pct">${total ? `발주액의 ${realPct}%` : ''}</span><span class="real-sub">순수익(NET) ${fmt(net)} − 법인세 ${taxPct}%(${fmt(taxAmt)})</span>`;
 }
 
 // ── AI ROBOT ─────────────────────────────────────────────────────────────────
@@ -970,6 +985,51 @@ function calcRobot() {
     `법인세 = (최초수익 ${fmt(bProfit)} − ${dedLabel} ${fmt(ded)}) × ${taxPct}%<br>= <b>${fmt(taxAmt)}</b>`;
   document.getElementById('robotRealVal').innerHTML =
     `${fmt(real)}<span class="real-sub">최초수익 ${fmt(bProfit)} − ${dedLabel} ${fmt(ded)} − 법인세 ${fmt(taxAmt)}</span>`;
+}
+
+// ── reset helpers ─────────────────────────────────────────────────────────────
+function resetChips(groupId, directWrapId) {
+  const g = document.getElementById(groupId);
+  g.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  g.querySelector('.chip').classList.add('active');
+  if (directWrapId) document.getElementById(directWrapId).classList.remove('show');
+}
+function resetSegs(segId) {
+  const btns = document.getElementById(segId).querySelectorAll('.seg-btn');
+  btns.forEach((b,i) => b.classList.toggle('active', i === 0));
+}
+
+function resetLED() {
+  document.getElementById('materialCost').value    = '';
+  document.getElementById('constructionCost').value = '';
+  // option 1
+  resetChips('profitChips1', 'profitDirect1');
+  document.getElementById('ledAgency1').value = 35;
+  resetSegs('ledTaxSeg1');
+  // option 2
+  resetChips('profitChips2', 'profitDirect2');
+  resetChips('threshChips2', 'threshDirect2');
+  resetChips('overflowChips2', 'overflowDirect2');
+  document.getElementById('ledAgency2').value = 35;
+  resetSegs('ledTaxSeg2');
+  // reset 추가수익없음
+  const noOvBtn = document.getElementById('noOverflowBtn2');
+  if (noOvBtn.classList.contains('active')) toggleNoOverflow2(noOvBtn);
+  // reset tab to 1
+  switchTab(1);
+  calc();
+}
+
+function resetRobot() {
+  document.getElementById('robotQty').value = '';
+  resetChips('robotProfitChips', 'robotProfitDirect');
+  const vipSegs = document.getElementById('robotVipSeg').querySelectorAll('.seg-btn');
+  vipSegs.forEach((b,i) => b.classList.toggle('active', i === 0));
+  document.getElementById('robotVipVal').value  = 10;
+  document.getElementById('robotAgency').value  = 10;
+  resetSegs('robotTaxSeg');
+  switchVip();
+  calc();
 }
 
 // ── init ──────────────────────────────────────────────────────────────────────
