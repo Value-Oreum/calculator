@@ -40,7 +40,7 @@ body {
 /* ══════════════════════════════════
    LANDING PAGE
 ══════════════════════════════════ */
-#screen-landing {
+.landing-center {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -386,12 +386,14 @@ input[type=range].slider::-moz-range-thumb {
      SCREEN 1 : LANDING
 ══════════════════════════════════ -->
 <section class="screen active" id="screen-landing">
+  <div class="landing-center">
   <div class="landing-inner">
     <img src="1.png" alt="오름 수익계산기" class="landing-img" onclick="go('home')" style="cursor:pointer">
     <div class="cta-wrap">
       <p class="cta-sub">매출이 인격이다 — OREUM 수익계산기</p>
       <button class="cta-btn" onclick="go('home')">계산하기 ▶</button>
     </div>
+  </div>
   </div>
 </section>
 
