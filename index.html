@@ -58,14 +58,17 @@ body {
 }
 .landing-img {
   width: 100%;
+  height: 100%;
   display: block;
+  object-fit: contain;
+  background: var(--bg2);
   border-radius: 16px;
   border: 3px solid var(--border);
   box-shadow:
     0 0 0 1px rgba(201,168,76,.15),
     0 20px 60px rgba(0,0,0,.75);
 }
-.landing-inner picture { width: 100%; display: block; }
+.landing-inner picture { width: 100%; aspect-ratio: 1 / 1; display: block; }
 .cta-wrap {
   width: 100%;
   background: var(--bg2);
