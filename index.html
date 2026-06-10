@@ -65,6 +65,7 @@ body {
     0 0 0 1px rgba(201,168,76,.15),
     0 20px 60px rgba(0,0,0,.75);
 }
+.landing-inner picture { width: 100%; display: block; }
 .cta-wrap {
   width: 100%;
   background: var(--bg2);
@@ -390,7 +391,22 @@ input[type=range].slider::-moz-range-thumb {
 <section class="screen active" id="screen-landing">
   <div class="landing-center">
   <div class="landing-inner">
-    <img src="1.png" alt="오름 수익계산기" class="landing-img" onclick="go('home')" style="cursor:pointer">
+    <picture>
+      <source
+        type="image/webp"
+        srcset="1-700.webp 700w, 1-1400.webp 1400w"
+        sizes="(min-width: 740px) 700px, calc(100vw - 40px)">
+      <img
+        src="1.png"
+        alt="오름 수익계산기"
+        class="landing-img"
+        width="1536"
+        height="1024"
+        decoding="async"
+        fetchpriority="high"
+        onclick="go('home')"
+        style="cursor:pointer">
+    </picture>
     <div class="cta-wrap">
       <p class="cta-sub">매출이 인격이다 — OREUM 수익계산기</p>
       <button class="cta-btn" onclick="go('home')">계산하기 ▶</button>
