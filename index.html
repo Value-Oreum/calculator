@@ -122,6 +122,7 @@ body {
 .header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 20px 0 16px;
 }
@@ -133,7 +134,8 @@ body {
   cursor: pointer; transition: all .15s; font-family: var(--font);
 }
 .back-btn:hover { color: var(--gold2); border-color: var(--gold); }
-.title-group { display: flex; align-items: center; gap: 10px; flex: 1; }
+.home-btn { margin-left: auto; }
+.title-group { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .page-title { font-size: 20px; font-weight: 800; color: var(--cream); }
 .product-tag {
   display: inline-flex; align-items: center; gap: 5px;
@@ -441,6 +443,7 @@ input[type=range].slider::-moz-range-thumb {
         <span class="page-title">오름 수익계산기</span>
         <span class="product-tag led">LED</span>
       </div>
+      <button class="back-btn home-btn" onclick="go('landing')">처음으로</button>
     </div>
 
     <!-- 발주액 입력 -->
@@ -670,6 +673,7 @@ input[type=range].slider::-moz-range-thumb {
         <span class="page-title">오름 수익계산기</span>
         <span class="product-tag robot">AI ROBOT</span>
       </div>
+      <button class="back-btn home-btn" onclick="go('landing')">처음으로</button>
     </div>
 
     <!-- 발주 정보 -->
