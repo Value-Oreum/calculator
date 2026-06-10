@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>오름 수익계산기 — OREUM</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #181b24;
+    --bg3: #1e2233;
+    --border: #2a2f42;
+    --accent: #4a7cff;
+    --accent2: #6cc6ff;
+    --text: #e8ecf4;
+    --muted: #7c8396;
+    --ok: #3de89b;
+    --warn: #ffb84a;
+    --gold: #ffd166;
+    --tag-led: #7c5fff;
+    --tag-robot: #2dd4bf;
+    --radius: 14px;
+    --font: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 50% -10%, #1a2030 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding: 28px 16px 90px;
+  }
+  .app { max-width: 560px; margin: 0 auto; }
+
+  /* ── Screens ── */
+  .screen { display: none; animation: fade .25s ease; }
+  .screen.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .logo {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .title-group { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .page-title { font-size: 20px; font-weight: 800; color: var(--text); }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 10px;
+    padding: 7px 12px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .15s;
+    font-family: var(--font);
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  .product-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 11px; border-radius: 20px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .product-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+  .product-tag.led { background: rgba(124,95,255,.15); border: 1px solid rgba(124,95,255,.4); color: #a78bfa; }
+  .product-tag.led::before { background: #a78bfa; }
+  .product-tag.robot { background: rgba(45,212,191,.13); border: 1px solid rgba(45,212,191,.4); color: var(--tag-robot); }
+  .product-tag.robot::before { background: var(--tag-robot); }
+
+  /* ── Home ── */
+  .home-hero { text-align: center; margin: 18px 0 30px; }
+  .home-hero .brand { font-size: 13px; font-weight: 800; letter-spacing: 0.22em; color: var(--accent2); text-transform: uppercase; }
+  .home-hero h1 { font-size: 27px; font-weight: 800; margin-top: 8px; }
+  .home-hero p { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+  .home-grid { display: grid; gap: 14px; }
+  .product-card {
+    text-align: left; cursor: pointer;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    display: flex; align-items: center; gap: 16px;
+    transition: all .18s; font-family: var(--font); color: var(--text);
+  }
+  .product-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(74,124,255,.5); }
+  .product-card .pc-icon {
+    width: 54px; height: 54px; border-radius: 14px;
+    display: grid; place-items: center; font-size: 26px; flex-shrink: 0;
+  }
+  .product-card.led .pc-icon { background: rgba(124,95,255,.15); }
+  .product-card.robot .pc-icon { background: rgba(45,212,191,.13); }
+  .product-card .pc-body { flex: 1; }
+  .product-card .pc-title { font-size: 17px; font-weight: 800; }
+  .product-card .pc-desc { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .product-card .pc-arrow { color: var(--muted); font-size: 20px; }
+
+  /* ── Card ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 16px;
+  }
+
+  /* ── Input ── */
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .input-field {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; color: var(--text); font-size: 15px; font-family: var(--font);
+    width: 100%; outline: none; transition: border-color .15s;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .input-field[readonly] { color: var(--muted); }
+  .input-suffix { position: relative; }
+  .input-suffix input { padding-right: 34px; }
+  .suffix-label { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+
+  .total-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; background: var(--bg3); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .total-label { font-size: 12px; color: var(--muted); }
+  .total-value { font-size: 17px; font-weight: 800; color: var(--accent2); }
+
+  /* ── Tabs ── */
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn {
+    flex: 1; padding: 10px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--muted); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all .15s; font-family: var(--font);
+  }
+  .tab-btn.active { background: rgba(74,124,255,.15); border-color: var(--accent); color: var(--accent2); }
+
+  .option-panel { display: none; }
+  .option-panel.active { display: block; }
+
+  /* ── Chips ── */
+  .chip-section { margin-bottom: 14px; }
+  .chip-label { font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+  .chip {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--muted); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .15s; font-family: var(--font);
+  }
+  .chip.active { background: rgba(74,124,255,.18); border-color: var(--accent); color: var(--accent2); }
+  .chip.direct { border-style: dashed; }
+  .chip.direct.active { background: rgba(255,184,74,.12); border-color: var(--warn); color: var(--warn); border-style: dashed; }
+
+  .direct-input-wrap { display: none; align-items: center; gap: 6px; margin-top: 8px; }
+  .direct-input-wrap.show { display: flex; }
+  .direct-input-wrap input {
+    width: 110px; background: var(--bg3); border: 1px solid var(--warn); border-radius: 8px;
+    padding: 7px 10px; color: var(--text); font-size: 14px; font-family: var(--font);
+    outline: none; text-align: right;
+  }
+  .direct-input-wrap .unit { font-size: 13px; color: var(--warn); }
+
+  .threshold-note { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+  .threshold-note b { color: var(--text); }
+
+  /* ── Divider ── */
+  .divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--muted); font-size: 11px; letter-spacing: 0.1em; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── Result rows ── */
+  .result-block { display: flex; flex-direction: column; gap: 8px; }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: var(--bg3); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .result-row.highlight { border-color: var(--accent); background: rgba(74,124,255,.08); }
+  .result-row-label { font-size: 12px; color: var(--muted); }
+  .result-row-value { font-size: 15px; font-weight: 700; color: var(--text); }
+  .result-row.highlight .result-row-value { color: var(--accent2); }
+  .result-rate { font-size: 11px; color: var(--muted); margin-left: 6px; font-weight: 400; }
+  .safe-comment { color: var(--gold); font-size: 11px; font-weight: 700; margin-left: 6px; }
+
+  .overflow-detail {
+    padding: 10px 14px; background: rgba(255,184,74,.05); border: 1px solid rgba(255,184,74,.25);
+    border-radius: 8px; font-size: 11px; color: var(--muted); line-height: 1.7;
+  }
+  .overflow-detail b { color: var(--warn); }
+
+  /* ── Net / Tax / Real ── */
+  .net-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .net-section-title { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+
+  .net-breakdown {
+    padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 12px; color: var(--muted); line-height: 1.9; margin: 6px 0 10px;
+  }
+  .net-breakdown b { color: var(--text); font-size: 13px; }
+
+  .net-result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px; background: rgba(61,232,155,.07); border: 1px solid rgba(61,232,155,.3); border-radius: 8px;
+  }
+  .net-result-row .net-label { font-size: 13px; color: var(--ok); font-weight: 700; }
+  .net-result-row .net-value { font-size: 17px; font-weight: 800; color: var(--ok); }
+
+  .tax-section { margin-top: 16px; }
+  .real-result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px; margin-top: 14px;
+    background: linear-gradient(135deg, rgba(255,209,102,.14), rgba(255,184,74,.06));
+    border: 1px solid rgba(255,209,102,.45); border-radius: 12px;
+  }
+  .real-label { font-size: 13.5px; color: var(--gold); font-weight: 800; }
+  .real-value { font-size: 20px; font-weight: 900; color: var(--gold); text-align: right; }
+  .real-sub { display: block; font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  /* ── Slider ── */
+  .slider-wrap { margin-bottom: 8px; }
+  .slider-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .slider-name { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .slider-value { font-size: 20px; font-weight: 800; color: var(--accent2); }
+  input[type=range].slider {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+    border-radius: 999px; background: var(--bg3); outline: none; border: 1px solid var(--border);
+  }
+  input[type=range].slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); border: 3px solid #fff; cursor: pointer; box-shadow: 0 2px 8px rgba(74,124,255,.6);
+  }
+  input[type=range].slider::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid #fff; cursor: pointer;
+  }
+  .slider-scale { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); margin-top: 6px; }
+
+  /* ── Segmented toggle ── */
+  .seg { display: flex; gap: 8px; }
+  .seg-btn {
+    flex: 1; padding: 11px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--muted); font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .15s; font-family: var(--font);
+  }
+  .seg-btn.active { background: rgba(74,124,255,.18); border-color: var(--accent); color: var(--accent2); }
+
+  .vip-panel { margin-top: 4px; }
+
+  @media (max-width: 420px) {
+    .input-row { grid-template-columns: 1fr; }
+    .tabs { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ════════════════ HOME ════════════════ -->
+  <section class="screen active" id="screen-home">
+    <div class="home-hero">
+      <div class="brand">OREUM</div>
+      <h1>오름 수익계산기</h1>
+      <p>제품 종류를 선택하면 해당 납품 체계에 맞는 계산기가 열립니다.</p>
+    </div>
+    <div class="home-grid">
+      <button class="product-card led" onclick="go('led')">
+        <div class="pc-icon">💡</div>
+        <div class="pc-body">
+          <div class="pc-title">LED</div>
+          <div class="pc-desc">발주액 기반 수익 · 에이전시 수수료 · 법인세 차감 REAL 수익</div>
+        </div>
+        <div class="pc-arrow">›</div>
+      </button>
+      <button class="product-card robot" onclick="go('robot')">
+        <div class="pc-icon">🤖</div>
+        <div class="pc-body">
+          <div class="pc-title">AI ROBOT</div>
+          <div class="pc-desc">대당 2,000만원 · VIP 수수료 빽업 / 영업에이전시 · 안전매입 · REAL 수익</div>
+        </div>
+        <div class="pc-arrow">›</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ════════════════ LED ════════════════ -->
+  <section class="screen" id="screen-led">
+    <div class="header">
+      <button class="back-btn" onclick="go('home')">‹ 제품선택</button>
+      <div class="title-group">
+        <span class="page-title">오름 수익계산기</span>
+        <span class="product-tag led">LED</span>
+      </div>
+    </div>
+
+    <!-- 발주액 입력 -->
+    <div class="card">
+      <div class="card-title">발주액 입력</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label class="input-label">멀티미디어 자재비</label>
+          <div class="input-suffix">
+            <input class="input-field" type="number" id="materialCost" placeholder="0" oninput="calc()" />
+            <span class="suffix-label">원</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">공사비 (인테리어비)</label>
+          <div class="input-suffix">
+            <input class="input-field" type="number" id="constructionCost" placeholder="0" oninput="calc()" />
+            <span class="suffix-label">원</span>
+          </div>
+        </div>
+      </div>
+      <div class="total-row">
+        <span class="total-label">전체 발주액</span>
+        <span class="total-value" id="totalOrder">0 원</span>
+      </div>
+    </div>
+
+    <!-- 수익 옵션 -->
+    <div class="card">
+      <div class="card-title">수익 옵션 선택</div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(1)">옵션 1 — 발주액 기준</button>
+        <button class="tab-btn" onclick="switchTab(2)">옵션 2 — 자재비 기준</button>
+      </div>
+
+      <!-- ── 옵션 1 ── -->
+      <div class="option-panel active" id="panel1">
+        <div class="chip-section">
+          <div class="chip-label">수익 비율 선택</div>
+          <div class="chip-row" id="profitChips1">
+            <button class="chip active" onclick="selectChip('profitChips1','profitDirect1',this,30)">30%</button>
+            <button class="chip" onclick="selectChip('profitChips1','profitDirect1',this,35)">35%</button>
+            <button class="chip direct" onclick="toggleDirect('profitChips1','profitDirect1',this)">직접입력</button>
+          </div>
+          <div class="direct-input-wrap" id="profitDirect1">
+            <input type="number" id="profitDirectVal1" min="1" max="100" placeholder="0" oninput="calc()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+
+        <div class="chip-section">
+          <div class="chip-label">공사비 초과 기준점</div>
+          <div class="chip-row" id="threshChips1">
+            <button class="chip active" onclick="selectChip('threshChips1',null,this,15)">15%</button>
+            <button class="chip" onclick="selectChip('threshChips1',null,this,17)">17%</button>
+            <button class="chip" onclick="selectChip('threshChips1',null,this,20)">20%</button>
+          </div>
+          <div class="threshold-note" id="threshNote1">공사비가 발주액의 <b>15%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.</div>
+        </div>
+
+        <div class="chip-section">
+          <div class="chip-label">공사비 초과분 비율</div>
+          <div class="chip-row" id="overflowChips1">
+            <button class="chip active" onclick="selectChip('overflowChips1','overflowDirect1',this,85)">85%</button>
+            <button class="chip" onclick="selectChip('overflowChips1','overflowDirect1',this,80)">80%</button>
+            <button class="chip direct" onclick="toggleDirect('overflowChips1','overflowDirect1',this)">직접입력</button>
+          </div>
+          <div class="direct-input-wrap" id="overflowDirect1">
+            <input type="number" id="overflowDirectVal1" min="1" max="100" placeholder="0" oninput="calc()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+
+        <div class="divider">결과</div>
+        <div class="result-block">
+          <div class="result-row">
+            <span class="result-row-label" id="profitLabel1">기본 수익 (발주액 × 30%)</span>
+            <span class="result-row-value" id="profitBase1">0 원</span>
+          </div>
+          <div id="overflowDetail1" class="overflow-detail" style="display:none"></div>
+          <div class="result-row">
+            <span class="result-row-label">공사비 초과 추가 수익</span>
+            <span class="result-row-value" id="profitOverflow1">0 원</span>
+          </div>
+          <div class="result-row highlight">
+            <span class="result-row-label">최종 수익 합계</span>
+            <span class="result-row-value" id="profitTotal1">0 원 <span class="result-rate" id="profitTotalRate1">발주액의 —</span></span>
+          </div>
+        </div>
+
+        <!-- 에이전시 제공 수수료 → 순수익(NET) → 법인세 → REAL -->
+        <div class="net-section">
+          <div class="net-section-title">에이전시 제공 수수료</div>
+          <div class="slider-wrap">
+            <div class="slider-head">
+              <span class="slider-name">수수료율 (10% ~ 40%)</span>
+              <span class="slider-value" id="ledAgencyVal1">35%</span>
+            </div>
+            <input type="range" class="slider" id="ledAgency1" min="10" max="40" step="1" value="35" oninput="calc()" />
+            <div class="slider-scale"><span>10%</span><span>25%</span><span>40%</span></div>
+          </div>
+          <div class="net-breakdown" id="ledNetBreak1"></div>
+          <div class="net-result-row">
+            <span class="net-label">순수익 (NET)</span>
+            <span class="net-value" id="ledNetVal1">0 원</span>
+          </div>
+
+          <div class="tax-section">
+            <div class="chip-label">법인세 (영업비 포함)</div>
+            <div class="seg" id="ledTaxSeg1">
+              <button class="seg-btn active" data-v="12" onclick="setSeg('ledTaxSeg1',this);calc()">12%</button>
+              <button class="seg-btn" data-v="22" onclick="setSeg('ledTaxSeg1',this);calc()">22%</button>
+            </div>
+          </div>
+
+          <div class="real-result-row">
+            <span class="real-label">오름 최종 REAL 수익</span>
+            <span class="real-value" id="ledRealVal1">0 원</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 옵션 2 ── -->
+      <div class="option-panel" id="panel2">
+        <div class="chip-section">
+          <div class="chip-label">수익 비율 선택</div>
+          <div class="chip-row" id="profitChips2">
+            <button class="chip active" onclick="selectChip('profitChips2','profitDirect2',this,40)">40%</button>
+            <button class="chip" onclick="selectChip('profitChips2','profitDirect2',this,45)">45%</button>
+            <button class="chip" onclick="selectChip('profitChips2','profitDirect2',this,50)">50%</button>
+            <button class="chip" onclick="selectChip('profitChips2','profitDirect2',this,55)">55%</button>
+            <button class="chip direct" onclick="toggleDirect('profitChips2','profitDirect2',this)">직접입력</button>
+          </div>
+          <div class="direct-input-wrap" id="profitDirect2">
+            <input type="number" id="profitDirectVal2" min="1" max="100" placeholder="0" oninput="calc()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+
+        <div class="chip-section">
+          <div class="chip-label">공사비 초과 기준점</div>
+          <div class="chip-row" id="threshChips2">
+            <button class="chip active" onclick="selectChip('threshChips2',null,this,15)">15%</button>
+            <button class="chip" onclick="selectChip('threshChips2',null,this,17)">17%</button>
+            <button class="chip" onclick="selectChip('threshChips2',null,this,20)">20%</button>
+          </div>
+          <div class="threshold-note" id="threshNote2">공사비가 발주액의 <b>15%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.</div>
+        </div>
+
+        <div class="chip-section">
+          <div class="chip-label">공사비 초과분 비율</div>
+          <div class="chip-row" id="overflowChips2">
+            <button class="chip active" onclick="selectChip('overflowChips2','overflowDirect2',this,85)">85%</button>
+            <button class="chip" onclick="selectChip('overflowChips2','overflowDirect2',this,80)">80%</button>
+            <button class="chip direct" onclick="toggleDirect('overflowChips2','overflowDirect2',this)">직접입력</button>
+          </div>
+          <div class="direct-input-wrap" id="overflowDirect2">
+            <input type="number" id="overflowDirectVal2" min="1" max="100" placeholder="0" oninput="calc()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+
+        <div class="divider">결과</div>
+        <div class="result-block">
+          <div class="result-row">
+            <span class="result-row-label" id="profitLabel2">기본 수익 (자재비 × 40%)</span>
+            <span class="result-row-value" id="profitBase2">0 원</span>
+          </div>
+          <div id="overflowDetail2" class="overflow-detail" style="display:none"></div>
+          <div class="result-row">
+            <span class="result-row-label">공사비 초과 추가 수익</span>
+            <span class="result-row-value" id="profitOverflow2">0 원</span>
+          </div>
+          <div class="result-row highlight">
+            <span class="result-row-label">최종 수익 합계</span>
+            <span class="result-row-value" id="profitTotal2">0 원 <span class="result-rate" id="profitTotalRate2">발주액의 —</span></span>
+          </div>
+        </div>
+
+        <div class="net-section">
+          <div class="net-section-title">에이전시 제공 수수료</div>
+          <div class="slider-wrap">
+            <div class="slider-head">
+              <span class="slider-name">수수료율 (10% ~ 40%)</span>
+              <span class="slider-value" id="ledAgencyVal2">35%</span>
+            </div>
+            <input type="range" class="slider" id="ledAgency2" min="10" max="40" step="1" value="35" oninput="calc()" />
+            <div class="slider-scale"><span>10%</span><span>25%</span><span>40%</span></div>
+          </div>
+          <div class="net-breakdown" id="ledNetBreak2"></div>
+          <div class="net-result-row">
+            <span class="net-label">순수익 (NET)</span>
+            <span class="net-value" id="ledNetVal2">0 원</span>
+          </div>
+
+          <div class="tax-section">
+            <div class="chip-label">법인세 (영업비 포함)</div>
+            <div class="seg" id="ledTaxSeg2">
+              <button class="seg-btn active" data-v="12" onclick="setSeg('ledTaxSeg2',this);calc()">12%</button>
+              <button class="seg-btn" data-v="22" onclick="setSeg('ledTaxSeg2',this);calc()">22%</button>
+            </div>
+          </div>
+
+          <div class="real-result-row">
+            <span class="real-label">오름 최종 REAL 수익</span>
+            <span class="real-value" id="ledRealVal2">0 원</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ AI ROBOT ════════════════ -->
+  <section class="screen" id="screen-robot">
+    <div class="header">
+      <button class="back-btn" onclick="go('home')">‹ 제품선택</button>
+      <div class="title-group">
+        <span class="page-title">오름 수익계산기</span>
+        <span class="product-tag robot">AI ROBOT</span>
+      </div>
+    </div>
+
+    <!-- 발주 정보 -->
+    <div class="card">
+      <div class="card-title">발주 정보</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label class="input-label">발주 대수</label>
+          <div class="input-suffix">
+            <input class="input-field" type="number" id="robotQty" placeholder="0" oninput="calc()" />
+            <span class="suffix-label">대</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">1대당 가격 (VAT 별도)</label>
+          <div class="input-suffix">
+            <input class="input-field" type="text" value="20,000,000" readonly />
+            <span class="suffix-label">원</span>
+          </div>
+        </div>
+      </div>
+      <div class="total-row">
+        <span class="total-label">발주금액 (VAT 별도)</span>
+        <span class="total-value" id="robotOrder">0 원</span>
+      </div>
+    </div>
+
+    <!-- 오름 수익률 -->
+    <div class="card">
+      <div class="card-title">오름 수익률</div>
+      <div class="chip-section">
+        <div class="chip-label">수익 비율 선택</div>
+        <div class="chip-row" id="robotProfitChips">
+          <button class="chip active" onclick="selectChip('robotProfitChips','robotProfitDirect',this,35)">35%</button>
+          <button class="chip" onclick="selectChip('robotProfitChips','robotProfitDirect',this,40)">40%</button>
+          <button class="chip" onclick="selectChip('robotProfitChips','robotProfitDirect',this,45)">45%</button>
+          <button class="chip" onclick="selectChip('robotProfitChips','robotProfitDirect',this,50)">50%</button>
+          <button class="chip" onclick="selectChip('robotProfitChips','robotProfitDirect',this,55)">55%</button>
+          <button class="chip direct" onclick="toggleDirect('robotProfitChips','robotProfitDirect',this)">직접입력</button>
+        </div>
+        <div class="direct-input-wrap" id="robotProfitDirect">
+          <input type="number" id="robotProfitDirectVal" min="1" max="100" placeholder="0" oninput="calc()" />
+          <span class="unit">%</span>
+        </div>
+      </div>
+      <div class="net-result-row">
+        <span class="net-label">최초 수익금액 (오름 수수료)</span>
+        <span class="net-value" id="robotBaseProfit">0 원</span>
+      </div>
+    </div>
+
+    <!-- VIP 수수료 빽업 -->
+    <div class="card">
+      <div class="card-title">VIP 수수료 빽업</div>
+      <div class="chip-label">VIP 수수료 빽업 필요 여부</div>
+      <div class="seg" id="robotVipSeg">
+        <button class="seg-btn active" data-v="yes" onclick="setSeg('robotVipSeg',this);switchVip();calc()">필요</button>
+        <button class="seg-btn" data-v="no" onclick="setSeg('robotVipSeg',this);switchVip();calc()">필요 없음</button>
+      </div>
+
+      <!-- 4-1) VIP 필요 -->
+      <div class="vip-panel" id="robotVipPanel">
+        <div class="chip-section" style="margin-top:16px">
+          <div class="chip-label">VIP 수수료율</div>
+          <div class="direct-input-wrap show" style="margin-top:8px">
+            <input type="number" id="robotVipVal" min="0" max="100" value="10" placeholder="0" oninput="calc()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="net-breakdown" id="robotVipBreak"></div>
+        <div class="result-block">
+          <div class="result-row">
+            <span class="result-row-label">VIP 수수료 금액</span>
+            <span class="result-row-value" id="robotVipAmt">0 원</span>
+          </div>
+          <div class="result-row highlight">
+            <span class="result-row-label">실제 매입비용 <span class="safe-comment">25% 안전 매입</span></span>
+            <span class="result-row-value" id="robotBuyCost">0 원</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-2) 영업에이전시 -->
+      <div class="vip-panel" id="robotAgencyPanel" style="display:none">
+        <div class="slider-wrap" style="margin-top:16px">
+          <div class="slider-head">
+            <span class="slider-name">영업에이전시 수수료율 (10% ~ 40%)</span>
+            <span class="slider-value" id="robotAgencyVal">10%</span>
+          </div>
+          <input type="range" class="slider" id="robotAgency" min="10" max="40" step="1" value="10" oninput="calc()" />
+          <div class="slider-scale"><span>10%</span><span>25%</span><span>40%</span></div>
+        </div>
+        <div class="net-breakdown" id="robotAgencyBreak"></div>
+        <div class="result-row">
+          <span class="result-row-label">에이전시 수수료 금액</span>
+          <span class="result-row-value" id="robotAgencyAmt">0 원</span>
+        </div>
+      </div>
+
+      <!-- 법인세 -->
+      <div class="tax-section">
+        <div class="chip-label">법인세 (영업비 포함)</div>
+        <div class="seg" id="robotTaxSeg">
+          <button class="seg-btn active" data-v="12" onclick="setSeg('robotTaxSeg',this);calc()">12%</button>
+          <button class="seg-btn" data-v="22" onclick="setSeg('robotTaxSeg',this);calc()">22%</button>
+        </div>
+        <div class="net-breakdown" id="robotTaxBreak"></div>
+      </div>
+
+      <div class="real-result-row">
+        <span class="real-label">오름 최종 REAL 수익</span>
+        <span class="real-value" id="robotRealVal">0 원</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ── Navigation ──────────────────────────────────────────────────────────────
+function go(prod) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + prod).classList.add('active');
+  window.scrollTo(0, 0);
+  calc();
+}
+
+// ── Tab (LED) ───────────────────────────────────────────────────────────────
+function switchTab(n) {
+  document.querySelectorAll('#screen-led .tab-btn').forEach((b, i) => b.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('#screen-led .option-panel').forEach((p, i) => p.classList.toggle('active', i + 1 === n));
+}
+
+// ── Chip / Direct / Segment helpers ────────────────────────────────────────
+function selectChip(groupId, directWrapId, btn, val) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  if (directWrapId) document.getElementById(directWrapId).classList.remove('show');
+  if (groupId === 'threshChips1') updateThreshNote(1, val);
+  if (groupId === 'threshChips2') updateThreshNote(2, val);
+  calc();
+}
+function toggleDirect(groupId, directWrapId, btn) {
+  const group = document.getElementById(groupId);
+  const wrap = document.getElementById(directWrapId);
+  const isNowActive = !btn.classList.contains('active');
+  group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.toggle('active', isNowActive);
+  wrap.classList.toggle('show', isNowActive);
+  calc();
+}
+function getVal(groupId, directWrapId, directValId) {
+  const group = document.getElementById(groupId);
+  const activeChip = [...group.querySelectorAll('.chip:not(.direct)')].find(c => c.classList.contains('active'));
+  if (activeChip) return parseFloat(activeChip.textContent) || 0;
+  const v = parseFloat(document.getElementById(directValId)?.value);
+  return isNaN(v) ? 0 : v;
+}
+function setSeg(segId, btn) {
+  document.getElementById(segId).querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function segVal(segId) {
+  const b = document.getElementById(segId).querySelector('.seg-btn.active');
+  return b ? b.dataset.v : null;
+}
+function updateThreshNote(n, pct) {
+  document.getElementById('threshNote' + n).innerHTML =
+    `공사비가 발주액의 <b>${pct}%</b>를 초과하면 초과분의 선택 비율이 추가 수익으로 발생합니다.`;
+}
+function getThresh(n) {
+  const group = document.getElementById('threshChips' + n);
+  const active = [...group.querySelectorAll('.chip')].find(c => c.classList.contains('active'));
+  return active ? parseFloat(active.textContent) : 15;
+}
+
+// ── Format ──────────────────────────────────────────────────────────────────
+function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function fmt(n) {
+  n = Math.round(n);
+  if (n === 0) return '0 원';
+  return n.toLocaleString('ko-KR') + ' 원';
+}
+function fmtRate(v, total) { return !total ? '—' : (v / total * 100).toFixed(1) + '%'; }
+
+// ── Umbrella recalc ─────────────────────────────────────────────────────────
+function calc() { calcLED(); calcRobot(); }
+
+// ── LED ─────────────────────────────────────────────────────────────────────
+function calcLED() {
+  const mat = num('materialCost'), con = num('constructionCost');
+  const total = mat + con;
+  document.getElementById('totalOrder').textContent = fmt(total);
+
+  const p1  = getVal('profitChips1', 'profitDirect1', 'profitDirectVal1');
+  const ov1 = getVal('overflowChips1', 'overflowDirect1', 'overflowDirectVal1');
+  const tp1 = calcOption(1, total, total, mat, con, p1, ov1, getThresh(1), '발주액');
+  ledNet(1, total, tp1);
+
+  const p2  = getVal('profitChips2', 'profitDirect2', 'profitDirectVal2');
+  const ov2 = getVal('overflowChips2', 'overflowDirect2', 'overflowDirectVal2');
+  const tp2 = calcOption(2, total, mat, mat, con, p2, ov2, getThresh(2), '자재비');
+  ledNet(2, total, tp2);
+}
+
+function calcOption(n, total, base, mat, con, profitPct, overflowPct, threshPct, baseLabel) {
+  const profitBase = base * (profitPct / 100);
+  document.getElementById('profitLabel' + n).textContent = `기본 수익 (${baseLabel} × ${profitPct}%)`;
+  document.getElementById('profitBase' + n).textContent = fmt(profitBase);
+
+  const threshAmt = total * (threshPct / 100);
+  const overflowAmt = Math.max(0, con - threshAmt);
+  const overflowProfit = overflowAmt * (overflowPct / 100);
+
+  const detailEl = document.getElementById('overflowDetail' + n);
+  if (overflowAmt > 0 && total > 0) {
+    detailEl.style.display = 'block';
+    detailEl.innerHTML =
+      `✅ 공사비(${fmt(con)})가 발주액의 ${threshPct}%(${fmt(threshAmt)})를 초과<br>` +
+      `초과분: ${fmt(overflowAmt)} × ${overflowPct}% = <b>+${fmt(overflowProfit)}</b>`;
+  } else {
+    detailEl.style.display = 'none';
+  }
+  document.getElementById('profitOverflow' + n).textContent = fmt(overflowProfit);
+
+  const totalProfit = profitBase + overflowProfit;
+  document.getElementById('profitTotal' + n).innerHTML =
+    `${fmt(totalProfit)} <span class="result-rate">${total ? '발주액의 ' + fmtRate(totalProfit, total) : '—'}</span>`;
+
+  return totalProfit;
+}
+
+// 에이전시 제공 수수료 → 순수익(NET) → 법인세 → REAL
+function ledNet(n, total, totalProfit) {
+  const agency = +document.getElementById('ledAgency' + n).value;
+  document.getElementById('ledAgencyVal' + n).textContent = agency + '%';
+
+  const agencyAmt = total * (agency / 100);
+  const net = totalProfit - agencyAmt;
+
+  document.getElementById('ledNetBreak' + n).innerHTML =
+    `최종수익합계 ${fmt(totalProfit)}<br>` +
+    `− 발주액 ${fmt(total)} × ${agency}% = ${fmt(agencyAmt)}<br>` +
+    `= <b>${fmt(net)}</b>`;
+  document.getElementById('ledNetVal' + n).textContent = fmt(net);
+
+  const taxPct = +segVal('ledTaxSeg' + n);
+  const taxAmt = net > 0 ? net * (taxPct / 100) : 0;
+  const real = net - taxAmt;
+  document.getElementById('ledRealVal' + n).innerHTML =
+    `${fmt(real)}<span class="real-sub">순수익(NET) ${fmt(net)} − 법인세 ${taxPct}% (${fmt(taxAmt)})</span>`;
+}
+
+// ── AI ROBOT ────────────────────────────────────────────────────────────────
+const ROBOT_PRICE = 20000000; // 1대당 2,000만원 (VAT 별도)
+
+function switchVip() {
+  const mode = segVal('robotVipSeg');
+  document.getElementById('robotVipPanel').style.display = mode === 'yes' ? 'block' : 'none';
+  document.getElementById('robotAgencyPanel').style.display = mode === 'no' ? 'block' : 'none';
+}
+
+function calcRobot() {
+  const qty = num('robotQty');
+  const order = qty * ROBOT_PRICE;
+  document.getElementById('robotOrder').textContent = fmt(order);
+
+  const profitPct = getVal('robotProfitChips', 'robotProfitDirect', 'robotProfitDirectVal');
+  const baseProfit = order * (profitPct / 100); // 최초 수익금액 (오름 수수료)
+  document.getElementById('robotBaseProfit').textContent = fmt(baseProfit);
+
+  const taxPct = +segVal('robotTaxSeg');
+  const mode = segVal('robotVipSeg');
+  let deduction = 0, deductLabel = '';
+
+  if (mode === 'yes') {
+    // 4-1) VIP 수수료 빽업 필요
+    const vipPct = num('robotVipVal');
+    const vipAmt = order * (vipPct / 100);                 // VIP 수수료 = 발주금액 × %
+    const buyCost = (baseProfit - vipAmt) / 0.75;          // 실제 매입비용 (25% 안전 매입)
+    document.getElementById('robotVipBreak').innerHTML =
+      `VIP 수수료 = 발주금액 ${fmt(order)} × ${vipPct}% = <b>${fmt(vipAmt)}</b><br>` +
+      `실제 매입비용 = (오름수수료 ${fmt(baseProfit)} − VIP수수료 ${fmt(vipAmt)}) ÷ 0.75 = <b>${fmt(buyCost)}</b>`;
+    document.getElementById('robotVipAmt').textContent = fmt(vipAmt);
+    document.getElementById('robotBuyCost').textContent = fmt(buyCost);
+    deduction = buyCost;
+    deductLabel = '안전매입비용';
+  } else {
+    // 4-2) 영업에이전시 수수료
+    const agencyPct = +document.getElementById('robotAgency').value;
+    document.getElementById('robotAgencyVal').textContent = agencyPct + '%';
+    const agencyAmt = order * (agencyPct / 100);           // 발주금액 전체의 %
+    document.getElementById('robotAgencyBreak').innerHTML =
+      `에이전시 수수료 = 발주금액 ${fmt(order)} × ${agencyPct}% = <b>${fmt(agencyAmt)}</b>`;
+    document.getElementById('robotAgencyAmt').textContent = fmt(agencyAmt);
+    deduction = agencyAmt;
+    deductLabel = '에이전시수수료';
+  }
+
+  // 법인세(영업비 포함) = (최초수익금액 − 차감액) × 세율
+  const taxBase = baseProfit - deduction;
+  const taxAmt = taxBase > 0 ? taxBase * (taxPct / 100) : 0;
+  const real = baseProfit - deduction - taxAmt;
+
+  document.getElementById('robotTaxBreak').innerHTML =
+    `법인세 = (최초수익 ${fmt(baseProfit)} − ${deductLabel} ${fmt(deduction)}) × ${taxPct}% = <b>${fmt(taxAmt)}</b>`;
+  document.getElementById('robotRealVal').innerHTML =
+    `${fmt(real)}<span class="real-sub">최초수익 ${fmt(baseProfit)} − ${deductLabel} ${fmt(deduction)} − 법인세 ${fmt(taxAmt)}</span>`;
+}
+
+// init
+switchVip();
+calc();
+</script>
+</body>
+</html>
