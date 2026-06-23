@@ -381,6 +381,12 @@ input[type=range].slider::-moz-range-thumb {
 }
 .slider-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 8px; font-family: var(--mono); }
 .vip-panel { margin-top: 6px; }
+.sphere-note {
+  font-size: 14px; color: var(--muted); margin-top: 10px;
+  padding: 8px 14px; background: var(--bg3); border-radius: 8px;
+  border-left: 3px solid rgba(201,168,76,.35);
+  font-family: var(--mono);
+}
 
 /* ── PC layout improvements ── */
 @media (min-width: 560px) {
@@ -474,6 +480,28 @@ input[type=range].slider::-moz-range-thumb {
         <span class="product-tag led">LED</span>
       </div>
       <button class="back-btn home-btn" onclick="go('landing')">🏠 처음으로</button>
+    </div>
+
+    <!-- 구체 표면적 계산기 -->
+    <div class="card">
+      <div class="card-title">구체 표면적 계산</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label class="input-label">구체 지름</label>
+          <div class="input-suffix">
+            <input class="input-field" type="number" id="sphereDiam" placeholder="0" min="0" step="0.1" oninput="calcSphere()">
+            <span class="suffix-label">m</span>
+          </div>
+        </div>
+        <div class="input-group" style="justify-content:flex-end">
+          <label class="input-label" style="opacity:0">-</label>
+          <div class="total-row" style="flex:1">
+            <span class="total-label">표면적</span>
+            <span class="total-value" id="sphereArea">0 m²</span>
+          </div>
+        </div>
+      </div>
+      <div class="sphere-note">표면적 = π × 지름² &nbsp;(LED 구체 면적 산정용)</div>
     </div>
 
     <!-- 발주액 입력 -->
@@ -1030,6 +1058,14 @@ function resetRobot() {
   resetSegs('robotTaxSeg');
   switchVip();
   calc();
+}
+
+// ── 구체 표면적 ───────────────────────────────────────────────────────────────
+function calcSphere() {
+  const d = parseFloat(document.getElementById('sphereDiam').value) || 0;
+  const area = Math.PI * d * d;
+  document.getElementById('sphereArea').textContent =
+    d > 0 ? area.toFixed(2) + ' m²' : '0 m²';
 }
 
 // ── init ──────────────────────────────────────────────────────────────────────
